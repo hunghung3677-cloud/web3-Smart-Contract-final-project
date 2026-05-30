@@ -1,47 +1,8 @@
 // 1. 貼上你的合約地址
-const contractAddress = "0x646758882c181D2FB46f48aF239e7A1762abc7C1"; 
+const contractAddress = "0xfDB7f8991Bc116e54D45Bc7EA121e431164976c2"; 
 
 // 2. 貼上你剛剛複製的 ABI
 const contractABI = [
-  {
-    "inputs": [],
-    "name": "fundActivePool",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "fundReservePool",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "payEntryFee",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address payable",
-        "name": "winner",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "sendPrize",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
   {
     "inputs": [],
     "stateMutability": "nonpayable",
@@ -71,6 +32,20 @@ const contractABI = [
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "fundActivePool",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "fundReservePool",
+    "outputs": [],
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -133,6 +108,13 @@ const contractABI = [
   },
   {
     "inputs": [],
+    "name": "payEntryFee",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "reservePool",
     "outputs": [
       {
@@ -142,6 +124,24 @@ const contractABI = [
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address payable",
+        "name": "winner",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "sendPrize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   }
 ];
