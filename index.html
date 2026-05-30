@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chance & Destiny</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* ==========================================
+           1. 基礎設定與隱藏卷軸
+           ========================================== */
+        body { 
+            margin: 0; 
+            height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background-color: #111; /* 底色改為深色 */
+            overflow: hidden; /* 隱藏超出畫面的照片牆 */
+            font-family: "Microsoft JhengHei", sans-serif;
+        }
+
+        /* ==========================================
+           2. 無限滾動照片牆 (背景層)
+           ========================================== */
+        .bg-wrapper {
+            position: fixed;
+            top: -50%; 
+            left: -20%;
+            width: 150%; 
+            height: 200%;
+            transform: rotate(-15deg); /* 傾斜 -15 度 */
+            z-index: -2; /* 放在最底層 */
+            display: flex;
+            flex-direction: column;
+            gap: 20px; /* 照片列之間的間距 */
+        }
+
+        .bg-row {
+            display: flex;
+            gap: 20px;
+            width: max-content;
+            animation: marquee 40s linear infinite; /* 單數列向左無限滾動 */
+        }
+        
+        .bg-row.reverse {
+            animation: marquee-rev 45s linear infinite; /* 雙數列向右無限滾動，速度稍微放慢增加層次 */
+        }
+
+        .bg-row img {
+            width: 480px;  /* 等比例縮小 1920*1080 (16:9) */
+            height: 270px;
+            object-fit: cover;
+            border-radius: 15px; /* 圓角看起來更柔和 */
+            opacity: 1; /* 稍微降低圖片原始亮度 */
+        }
+
+        /* 滾動動畫關鍵影格 */
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } 
+        }
+        @keyframes marquee-rev {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
+
+        /* ==========================================
+           3. 暗色遮罩層
+           ========================================== */
+        .overlay {
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(15, 23, 42, 0.7); /* 深藍灰色的半透明遮罩 */
+            z-index: -1;
+        }
+
+        /* ==========================================
+           4. 毛玻璃主卡片 (Glassmorphism)
+           ========================================== */
+        .card { 
+            padding: 50px; 
+            border-radius: 25px; 
+            text-align: center; 
+            width: 100%; 
+            max-width: 650px;
+            
+            /* 毛玻璃核心語法 */
+            background: rgba(255, 255, 255, 0.08); 
+            backdrop-filter: blur(15px); /* 讓背景圖片模糊 */
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            
+            color: white; /* 將卡片內的文字改為白色 */
+        }
+
+        .pool-amount { 
+            font-size: 2.2rem; 
+            font-weight: bold; 
+            color: #FFD700; /* 保持經典的黃金色獎池數字 */
+            margin: 25px 0; 
+            white-space: nowrap; 
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); /* 幫數字加一點發光效果 */
+        }
+
+        .game-btn { padding: 15px 30px; font-size: 1.2rem; font-weight: bold; border-radius: 12px; margin: 10px; width: 40%; transition: 0.3s; }
+        .game-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+    </style>
+</head>
+<body>
+
+    <div class="bg-wrapper">
+        <div class="bg-row">
+            <img src="images/1.jpg"><img src="images/2.jpg"><img src="images/3.jpg"><img src="images/4.jpg"><img src="images/5.jpg">
+            <img src="images/1.jpg"><img src="images/2.jpg"><img src="images/3.jpg"><img src="images/4.jpg"><img src="images/5.jpg">
+        </div>
+        <div class="bg-row reverse">
+            <img src="images/6.jpg"><img src="images/7.jpg"><img src="images/8.jpg"><img src="images/9.jpg"><img src="images/10.jpg">
+            <img src="images/6.jpg"><img src="images/7.jpg"><img src="images/8.jpg"><img src="images/9.jpg"><img src="images/10.jpg">
+        </div>
+        <div class="bg-row">
+            <img src="images/1.jpg"><img src="images/2.jpg"><img src="images/3.jpg"><img src="images/4.jpg"><img src="images/5.jpg">
+            <img src="images/1.jpg"><img src="images/2.jpg"><img src="images/3.jpg"><img src="images/4.jpg"><img src="images/5.jpg">
+        </div>
+        <div class="bg-row reverse">
+            <img src="images/6.jpg"><img src="images/7.jpg"><img src="images/8.jpg"><img src="images/9.jpg"><img src="images/10.jpg">
+            <img src="images/6.jpg"><img src="images/7.jpg"><img src="images/8.jpg"><img src="images/9.jpg"><img src="images/10.jpg">
+        </div>
+    </div>
+
+    <div class="overlay"></div>
+
+    <div class="card">
+        <h1>🏆 總獎池金額</h1>
+        <div class="pool-amount" id="poolBalance">-- GWEI</div>
+        
+        <p id="walletAddress" style="color: #bbb;">尚未連接錢包</p>
+        <button id="connectWalletBtn" class="btn btn-primary mb-4" onclick="connectWallet()">🦊 連接 MetaMask</button>
+
+        <hr style="border-color: rgba(255,255,255,0.2);">
+        
+        <div>
+            <button class="btn btn-danger game-btn" onclick="location.href='chance.html'">機會</button>
+            <button class="btn btn-dark game-btn" onclick="location.href='destiny.html'">命運</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.8.0/ethers.umd.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

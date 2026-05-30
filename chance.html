@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>機會 - 打字極限挑戰</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root { --primary-color: #4A90E2; --bg-color: #eef2f7; --track-color: #d1d8e0; }
+        body { font-family: "Microsoft JhengHei", sans-serif; background-color: var(--bg-color); display: flex; flex-direction: column; align-items: center; margin: 0; height: 100vh; overflow: hidden; }
+        
+        /* 頂部導覽列 */
+        .top-nav { width: 100%; padding: 15px 30px; display: flex; justify-content: space-between; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 100; }
+        
+        /* 收費閘門 (Paywall) */
+        #web3-gate { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; }
+        .gate-card { background: white; color: #333; padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; }
+        .gate-card h2 { color: #e74c3c; font-weight: bold; }
+        .gate-card p { font-size: 1.1rem; margin: 20px 0; }
+        
+        /* 遊戲區域 (預設與原本類似，先稍微縮減 CSS 保持版面乾淨) */
+        #game-stage { position: relative; width: 1500px; height: 170px; background: white; border-bottom: 5px solid var(--track-color); margin-top: 50px; border-radius: 20px; overflow: hidden; }
+        #cat { position: absolute; left: 50px; bottom: 20px; font-size: 70px; z-index: 10; }
+        .target-box { 
+            position: absolute; 
+            right: -300px; /* 因為單字變長了，起始位置可以設定得更靠右一點 */
+            bottom: 40px; 
+            background: var(--primary-color); 
+            color: white; 
+            padding: 15px 30px; /* 增加左右邊距，讓背景包覆得更好看 */
+            font-size: 40px; 
+            font-weight: bold; 
+            border-radius: 15px; 
+            letter-spacing: 5px; 
+            
+            /* 解決長度對不上的三大關鍵 */
+            white-space: nowrap; 
+            width: max-content; 
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
+        }
+        .typed-text { color: #FFD700; } /* 已經打對的字母變成金色 */
+        
+        .game-header { display: flex; justify-content: space-between; width: 1500px; margin-top: 20px; }
+        .status-box { font-size: 18px; font-weight: bold; background: white; padding: 8px 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+    <div class="top-nav">
+        <button class="btn btn-outline-secondary" onclick="location.href='index.html'">🔙 回上一頁</button>
+        <div class="fw-bold fs-5 text-primary">總獎池: <span id="poolBalance">載入中...</span></div>
+    </div>
+
+    <div id="web3-gate">
+        <div class="gate-card">
+            <h2>機會挑戰</h2>
+            <p>測試你的極限打字速度！<br>單字會不斷從右側襲來<br>難度會隨著時間急遽上升。<br>只要撐過 <strong>30秒</strong> 即可抱走總獎金！</p>
+            <hr>
+            <p class="text-danger fw-bold">入場費：100,000 GWEI<br><span style="font-size: 0.8rem; color: #666;">(等值 0.0001 ETH)</span></p>
+            <button id="payStartBtn" class="btn btn-danger btn-lg w-100" onclick="payAndStart()">🚀 支付並開始挑戰</button>
+        </div>
+    </div>
+
+    <div class="game-header">
+        <div class="status-box" id="timer-display">⏱️ 30s</div>
+        <div class="status-box" id="lives-display">❤️ ❤️ ❤️</div>
+        <div class="status-box" id="speed-display">⚡ 速度: 1x</div>
+    </div>
+
+    <div id="game-stage">
+        <div id="cat">🐹</div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.8.0/ethers.umd.min.js"></script>
+    <script src="app.js"></script>
+    <script src="chance.js"></script>
+</body>
+</html>
