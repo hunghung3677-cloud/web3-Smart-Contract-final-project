@@ -240,3 +240,36 @@ async function updatePoolBalance() {
         console.error("讀取獎池金額失敗:", error);
     }
 }
+// ==========================================
+// 網頁載入時的「唯讀模式」：不需 MetaMask 即可看獎池
+// ==========================================
+async function fetchPoolBalanceReadOnly() {
+    try {
+        // 1. 建立一個「唯讀的 Provider」：直接連線到 Sepolia 的公共節點 (不需要透過玩家的錢包)
+        const readOnlyProvider = new ethers.JsonRpcProvider("https://ethereum-sepolia-rpc.publicnode.com");
+        
+        // 2. 建立唯讀合約實體 (注意這裡傳入的是 readOnlyProvider，而不是 signer)
+        const readOnlyContract = new ethers.Contract(contractAddress, contractABI, readOnlyProvider);
+        
+        // 3. 呼叫合約讀取獎池
+        const balanceWei = await readOnlyContract.getPoolBalance();
+        
+        // 4. 轉換為 GWEI 並加上千分位 (跟我們之前寫的邏輯一樣)
+        const balanceGweiStr = ethers.formatUnits(balanceWei, "gwei");
+        const balanceGweiNum = parseFloat(balanceGweiStr);
+        const displayGwei = balanceGweiNum.toLocaleString(undefined, { 
+            minimumFractionDigits: 0, 
+            maximumFractionDigits: 9 
+        });
+        
+        // 5. 更新首頁畫面
+        document.getElementById("poolBalance").innerText = `${displayGwei} GWEI`;
+        
+    } catch (error) {
+        console.error("唯讀模式抓取獎池失敗:", error);
+        document.getElementById("poolBalance").innerText = "讀取中...";
+    }
+}
+
+// 讓網頁一完成載入，就立刻執行這個唯讀功能
+window.addEventListener('DOMContentLoaded', fetchPoolBalanceReadOnly);
