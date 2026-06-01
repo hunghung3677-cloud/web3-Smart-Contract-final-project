@@ -126,7 +126,7 @@ function gameLoop() {
         
         // 如果方塊撞到倉鼠 (x座標約 110)
         if(boxPos < 110) { 
-            //lives--; 
+            lives--; 
             document.getElementById('lives-display').innerText = '❤️ '.repeat(Math.max(0, lives));
             if(lives <= 0) {
                 gameOver();
